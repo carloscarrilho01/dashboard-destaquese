@@ -29,12 +29,21 @@ function getPostgresDb() {
   // Usar variáveis NEXT_PUBLIC se disponíveis, senão usar POSTGRES_*
   const poolConfig = {
     host: process.env.POSTGRES_HOST || 'localhost',
-    port: process.env.POSTGRES_PORT || 5432,
+    port: parseInt(process.env.POSTGRES_PORT) || 5432,
     user: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE || process.env.NEXT_PUBLIC_TABLE_NAME || 'postgres',
     ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
   };
+
+  console.log('Tentando conectar ao PostgreSQL:', {
+    host: poolConfig.host,
+    port: poolConfig.port,
+    user: poolConfig.user,
+    database: poolConfig.database,
+    ssl: !!poolConfig.ssl,
+    passwordSet: !!poolConfig.password
+  });
 
   const pool = new Pool(poolConfig);
 
