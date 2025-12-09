@@ -163,7 +163,7 @@ POST /api/chats
     "type": "human",
     "content": "Olá"
   }
-}
+
 
 # Atualizar
 PUT /api/chats/:id

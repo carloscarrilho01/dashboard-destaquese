@@ -24,6 +24,39 @@ initializeDatabase().catch(err => {
 
 const db = getDb();
 
+// Rota inicial
+app.get('/', (req, res) => {
+  res.json({
+    message: 'API WhatsApp Panel - Dashboard Destaque-se',
+    status: 'online',
+    version: '1.0.0',
+    endpoints: {
+      leads: {
+        getAll: 'GET /api/leads',
+        getById: 'GET /api/leads/:id',
+        create: 'POST /api/leads',
+        update: 'PUT /api/leads/:id',
+        delete: 'DELETE /api/leads/:id',
+        stats: 'GET /api/leads/stats'
+      },
+      chats: {
+        getAll: 'GET /api/chats',
+        getById: 'GET /api/chats/:id',
+        getBySession: 'GET /api/chats/session/:session_id',
+        sessions: 'GET /api/chats/sessions',
+        create: 'POST /api/chats',
+        update: 'PUT /api/chats/:id',
+        delete: 'DELETE /api/chats/:id',
+        stats: 'GET /api/chats/stats'
+      },
+      conversations: {
+        getAll: 'GET /api/conversations',
+        webhook: 'POST /api/webhook/message'
+      }
+    }
+  });
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Painel disponível em: http://localhost:${PORT}`);
