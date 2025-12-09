@@ -30,7 +30,12 @@ app.get('/', (req, res) => {
     message: 'API WhatsApp Panel - Dashboard Destaque-se',
     status: 'online',
     version: '1.0.0',
+    database: {
+      type: db.type,
+      connected: !!db
+    },
     endpoints: {
+      debug: 'GET /api/debug',
       leads: {
         getAll: 'GET /api/leads',
         getById: 'GET /api/leads/:id',
@@ -55,6 +60,48 @@ app.get('/', (req, res) => {
       }
     }
   });
+});
+
+// Endpoint de debug
+app.get('/api/debug', async (req, res) => {
+  try {
+    const dbInfo = {
+      type: db.type,
+      env: {
+        DATABASE_TYPE: process.env.DATABASE_TYPE,
+        POSTGRES_HOST: process.env.POSTGRES_HOST ? 'SET' : 'NOT SET',
+        POSTGRES_PORT: process.env.POSTGRES_PORT,
+        POSTGRES_USER: process.env.POSTGRES_USER ? 'SET' : 'NOT SET',
+        POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ? 'SET' : 'NOT SET',
+        POSTGRES_DATABASE: process.env.POSTGRES_DATABASE || 'NOT SET',
+        POSTGRES_SSL: process.env.POSTGRES_SSL
+      }
+    };
+
+    // Testar conexão
+    const testQuery = await db.execute('SELECT 1 as test');
+    dbInfo.connection = 'OK';
+    dbInfo.testResult = testQuery.rows;
+
+    // Listar tabelas
+    if (db.type === 'postgres') {
+      const tables = await db.execute(`
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        ORDER BY table_name
+      `);
+      dbInfo.tables = tables.rows.map(r => r.table_name);
+    }
+
+    res.json(dbInfo);
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+      stack: error.stack,
+      dbType: db.type
+    });
+  }
 });
 
 const server = app.listen(PORT, () => {
