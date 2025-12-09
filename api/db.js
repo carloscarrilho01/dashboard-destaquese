@@ -26,7 +26,36 @@ function getDb() {
 }
 
 function getPostgresDb() {
-  // Usar variáveis NEXT_PUBLIC se disponíveis, senão usar POSTGRES_*
+  // OPÇÃO 1: Usar DATABASE_URL (mais simples e confiável)
+  if (process.env.DATABASE_URL) {
+    console.log('Conectando via DATABASE_URL');
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    });
+
+    db = {
+      execute: async (sql, params = []) => {
+        try {
+          const result = await pool.query(sql, params);
+          return { rows: result.rows, rowCount: result.rowCount };
+        } catch (error) {
+          console.error('Erro PostgreSQL:', error);
+          throw error;
+        }
+      },
+      query: async (sql, params = []) => {
+        const result = await pool.query(sql, params);
+        return result.rows;
+      },
+      close: () => pool.end(),
+      type: 'postgres'
+    };
+
+    return db;
+  }
+
+  // OPÇÃO 2: Usar variáveis separadas (fallback)
   const poolConfig = {
     host: process.env.POSTGRES_HOST || 'localhost',
     port: parseInt(process.env.POSTGRES_PORT) || 5432,
@@ -36,7 +65,7 @@ function getPostgresDb() {
     ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
   };
 
-  console.log('Tentando conectar ao PostgreSQL:', {
+  console.log('Conectando via variáveis separadas:', {
     host: poolConfig.host,
     port: poolConfig.port,
     user: poolConfig.user,
