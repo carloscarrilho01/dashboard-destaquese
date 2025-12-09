@@ -69,10 +69,10 @@ app.get('/api/debug', async (req, res) => {
       type: db.type,
       env: {
         DATABASE_TYPE: process.env.DATABASE_TYPE,
-        POSTGRES_HOST: process.env.POSTGRES_HOST ? 'SET' : 'NOT SET',
+        POSTGRES_HOST: process.env.POSTGRES_HOST || 'NOT SET',
         POSTGRES_PORT: process.env.POSTGRES_PORT,
-        POSTGRES_USER: process.env.POSTGRES_USER ? 'SET' : 'NOT SET',
-        POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ? 'SET' : 'NOT SET',
+        POSTGRES_USER: process.env.POSTGRES_USER || 'NOT SET',
+        POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ? '***SET (length: ' + process.env.POSTGRES_PASSWORD.length + ')***' : 'NOT SET',
         POSTGRES_DATABASE: process.env.POSTGRES_DATABASE || 'NOT SET',
         POSTGRES_SSL: process.env.POSTGRES_SSL
       }
@@ -99,7 +99,14 @@ app.get('/api/debug', async (req, res) => {
     res.status(500).json({
       error: error.message,
       stack: error.stack,
-      dbType: db.type
+      dbType: db.type,
+      config: {
+        host: process.env.POSTGRES_HOST || 'NOT SET',
+        port: process.env.POSTGRES_PORT,
+        user: process.env.POSTGRES_USER || 'NOT SET',
+        database: process.env.POSTGRES_DATABASE || 'NOT SET',
+        ssl: process.env.POSTGRES_SSL
+      }
     });
   }
 });
