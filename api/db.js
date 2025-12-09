@@ -26,14 +26,17 @@ function getDb() {
 }
 
 function getPostgresDb() {
-  const pool = new Pool({
+  // Usar variáveis NEXT_PUBLIC se disponíveis, senão usar POSTGRES_*
+  const poolConfig = {
     host: process.env.POSTGRES_HOST || 'localhost',
     port: process.env.POSTGRES_PORT || 5432,
-    user: process.env.POSTGRES_USER,
+    user: process.env.POSTGRES_USER || 'postgres',
     password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DATABASE,
+    database: process.env.POSTGRES_DATABASE || process.env.NEXT_PUBLIC_TABLE_NAME || 'postgres',
     ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
-  });
+  };
+
+  const pool = new Pool(poolConfig);
 
   // Wrapper para compatibilidade
   db = {
