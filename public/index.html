@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Monitoramento - WhatsApp Bot</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Painel de Monitoramento WhatsApp</h1>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Total de Mensagens</span>
+                    <span class="stat-value" id="total-messages">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Contatos</span>
+                    <span class="stat-value" id="total-contacts">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Hoje</span>
+                    <span class="stat-value" id="messages-today">0</span>
+                </div>
+                <div class="stat-card pending">
+                    <span class="stat-label">Pendentes</span>
+                    <span class="stat-value" id="pending-messages">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Contatos</h2>
+                    <button class="refresh-btn" onclick="loadContacts()">↻</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="search-contact" placeholder="Buscar contato...">
+                </div>
+                <div class="contacts-list" id="contacts-list">
+                    <div class="loading">Carregando contatos...</div>
+                </div>
+            </aside>
+
+            <main class="chat-area">
+                <div class="chat-header">
+                    <h2 id="current-contact">Selecione um contato</h2>
+                    <div class="chat-actions">
+                        <select id="filter-type" onchange="filterMessages()">
+                            <option value="all">Todas</option>
+                            <option value="received">Recebidas</option>
+                            <option value="sent">Enviadas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="messages-container" id="messages-container">
+                    <div class="empty-state">
+                        <p>Selecione um contato para ver as mensagens</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div class="connection-status" id="connection-status">
+        <span class="status-dot"></span>
+        <span class="status-text">Conectando...</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

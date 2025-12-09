@@ -1,0 +1,33 @@
+CONFIGURAÇÃO RÁPIDA PARA N8N
+================================
+
+1. DESCOBRIR SEU IP LOCAL:
+
+   Execute no terminal:
+   ipconfig
+
+   Procure por "IPv4 Address" (algo como 192.168.1.X)
+
+2. USAR NO N8N:
+
+   Se n8n está na MESMA máquina:
+   http://localhost:3000/api/webhook/message
+
+   Se n8n está em OUTRA máquina da rede:
+   http://192.168.1.X:3000/api/webhook/message
+   (substitua X pelo seu IP)
+
+3. JSON DO BODY (copie e cole no n8n):
+
+{
+  "phone_number": "5511999999999",
+  "contact_name": "Nome do Cliente",
+  "message": "Texto da mensagem",
+  "message_type": "received"
+}
+
+4. PARA INTERNET (ngrok):
+
+   - Baixe: https://ngrok.com/download
+   - Execute: ngrok http 3000
+   - Use a URL gerada: https://abc123.ngrok-free.app/api/webhook/message

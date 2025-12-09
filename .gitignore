@@ -1,0 +1,6 @@
+node_modules/
+conversations.db
+*.log
+.env
+.DS_Store
+Thumbs.db
